@@ -51,6 +51,10 @@ def help():
 """	
 	print help
 
+def clear():
+	if os.name == "nt": os.system("cls")
+	else: os.system("clear")
+
 def main():
 	global dorks, sites
 
@@ -59,6 +63,12 @@ def main():
 
 		if wpb == "help":
 			help()
+
+		elif wpb == "exit":
+			sys.exit()
+
+		elif wpb == "clear":
+			clear()
 
 		elif wpb == "show passwords":
 			print "-"*60
@@ -115,12 +125,14 @@ def main():
 
 				found = bruteForce.found
 				if len(found) != 0:
+					print "-"*60
 					for f in found:
 						print "-"*60
 						print "[+] Site: %s"%(f[0])
 						print "    [+] Username: %s"%(f[1])
 						print "    [+] Password: %s"%(f[2])
 				else:
+					print "-"*60
 					print "[-_-] I could not find anything."
 
 			else:
