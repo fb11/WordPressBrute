@@ -8,7 +8,7 @@ Wordpress brute force tool with dork maker and dork scanner.
 """
 
 __author__ = "Black Viking"
-__date__   = "15.04.2017"
+__date__   = "16.04.2017"
 
 import os
 import sys
@@ -19,6 +19,9 @@ sys.path.append("./source")
 import dorkMaker
 import dorkScanner
 import bruteForce
+
+def logo():
+	
 
 def help():
 	pass
