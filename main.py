@@ -126,6 +126,9 @@ def main():
 			else:
 				print "[-] No sites to brute!"
 
+		else:
+			pass
+
 if __name__ == "__main__":
 	logo()
 	main()
