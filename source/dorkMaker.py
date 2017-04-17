@@ -12,6 +12,8 @@ Usage:
 	// 100 dork will be here
 """
 
+__author__ = "Black Viking"
+__date__   = "16.04.2017"
 
 
 import urllib2
@@ -40,7 +42,7 @@ def generateDork(x):
 
 if __name__ == "__main__":
 	''' When script runs directly '''
-	
+
 	if len(sys.argv) == 2:
 		print "\n" + "-"*60
 		for dork in generateDork(sys.argv[1]):
