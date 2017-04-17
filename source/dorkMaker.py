@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	
 	if len(sys.argv) == 2:
 		print "\n" + "-"*60
-		for dork in generateDorks(sys.argv[1]):
+		for dork in generateDork(sys.argv[1]):
 			print dork
 		print "\n" + "-"*60
 		print "\n[+] %s dork generated!"%(len(dorks))
