@@ -25,7 +25,7 @@ def getSites(query, num):
 	''' Get sites from query'''
 
 	for site in google.search(query=query, num=int(num), stop=1):
-		sites.append(site)
+		sites.append("http://"+site.split("/")[2]+"/wp-login.php")
 
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
