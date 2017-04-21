@@ -22,8 +22,8 @@ import sys
 
 wordPressDorks = ['("Just another WordPress site")', '("Comment on Hello world!")', '("Mr WordPress on Hello world!")', '("uncategorized")', '("author/admin")', '("Comentarios en Hello world!")']
 wordsSite      = "http://dpaste.com/1RGD1MK.txt"
-words = urllib2.urlopen(wordsSite).read().split("\n")
-dorks = []
+words 		   = urllib2.urlopen(wordsSite).read().split("\n")
+dorks  		   = []
 
 
 def getRandomWord():
@@ -33,7 +33,6 @@ def getRandomWord():
 
 def generateDork(x):
 	''' Generate Dorks'''
-
 	for i in range(1, int(x)+1):
 		dork = random.choice(wordPressDorks) + getRandomWord()
 		dorks.append(dork)
