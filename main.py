@@ -132,17 +132,19 @@ def main():
 
 		elif wpb == "start":
 			if len(dorkScanner.sites) != 0:
+				test             = 0
 				forBar           = 0
 				barLen           = 50.0
 				bruteForce.found = []
 				print "[+] Brute force attack started!"
 				print "[+] Check %s for found sites!\n"%(os.getcwdu()+os.sep+"found.txt")
 				for site in dorkScanner.sites:
-					sys.stdout.write("\r[%s%s | %d%% | Found Sites: %s]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2), len(bruteForce.found)))
+					sys.stdout.write("\r[%s%s | %d%% | Found Sites: %s | Tested: %s/%s ]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2), len(bruteForce.found), test, len(dorkScanner.sites)))
 					sys.stdout.flush()
 					bruteForce.brute(site)
 					forBar += barLen / len(dorkScanner.sites)
-				print "\r[%s | 100%% | Found sites: %s]"%("="*50, len(bruteForce.found))
+					test   += 1
+				print "\r[%s | 100%% | Found sites: %s | Tested: %s/%s]"%("="*50, len(bruteForce.found), len(dorkScanner.sites), len(dorkScanner.sites))
 
 				found = bruteForce.found
 				if len(found) != 0:
