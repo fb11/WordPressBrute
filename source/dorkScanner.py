@@ -19,13 +19,20 @@ __date__   = "16.04.2017"
 import sys
 import google
 
+from urllib2 import HTTPError
+
 sites = []
 
 def getSites(query, num):
 	''' Get sites from query'''
 
-	for site in google.search(query=query, num=int(num), stop=1):
-		sites.append("http://"+site.split("/")[2]+"/wp-login.php")
+	try:
+		for site in google.search(query=query, num=int(num), stop=1):
+			if site not in sites:
+				sites.append("http://"+site.split("/")[2]+"/wp-login.php")
+	except HTTPError:
+		print "[!] HTTP Error 503 Service Unreachable"
+		print "[*] Try other dork, if an error still continue use VPN"		
 
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
