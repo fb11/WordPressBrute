@@ -24,4 +24,4 @@ Generate dorks, scan dorks on google and brute force to wordpress sites. :D
         start               : Start to brute!
 
 ## Screenshot
-![alt tag](http://i.hizliresim.com/R0R3J7.png)
+![alt tag](https://i.hizliresim.com/ZZ4R7Z.png)
