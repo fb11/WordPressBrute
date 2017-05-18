@@ -14,14 +14,22 @@ import os
 import sys
 import time
 
-sys.path.append("./source")
+from source import dorkMaker
+from source import dorkScanner
+from source import bruteForce
 
-import dorkMaker
-import dorkScanner
-import bruteForce
+from colorama import Fore, Back, Style, init
+
+red     = Fore.RED
+cyan    = Fore.CYAN
+green   = Fore.GREEN
+white   = Fore.WHITE
+yellow  = Fore.YELLOW
+magenta = Fore.MAGENTA
+bright  = Style.BRIGHT
 
 def logo():
-	logo = """
+	logo = bright + cyan + """
  __      ______________________                __          
 /  \    /  \______   \______   \_______ __ ___/  |_  ____  
 \   \/\/   /|     ___/|    |  _/\_  __ \  |  \   __\/ __ \ 
@@ -35,10 +43,10 @@ def logo():
 	print logo
 
 def help():
-	help = """
+	help = bright + green + """
     Commands:
         generate dork 15    : Generate 15 dork, with random words.
-        scan dorks 5        : Find 5 site for a dork (5 dork and 5 site ==> ~25 site)
+        scan dorks 5        : Find 5 site for a dork (~25 site)
         show passwords      : Show default passwords.
         show dorks          : Show generated dorks.
         show sites          : Show found sites from dorks.
@@ -68,99 +76,101 @@ def main():
 		elif wpb == "show passwords":
 			print "-"*60
 			for pwd in bruteForce.passwords:
-				print "  "+pwd
+				print bright + cyan + "  "+pwd
 			print "-"*60
-			print "[*] There are %s password!"%(len(bruteForce.passwords))
+			print bright + yellow + "[*] There are %s password!"%(len(bruteForce.passwords))
 
 		elif "generate dork" in wpb:
 			try:
 				num = int(wpb.split()[-1])
 			except ValueError:
-				print "[-] Example Usage: generate dork 5"
+				print bright + yellow + "[-] Example Usage: generate dork 5"
 				main()
 
 			dorkMaker.dorks = [] # ^^
 			dorkMaker.generateDork(num)
-			print "[*] Generated %s dork!"%(len(dorkMaker.dorks))
+			print bright + yellow + "[*] Generated %s dork!"%(len(dorkMaker.dorks))
 
 		elif wpb == "show dorks":
 			if len(dorkMaker.dorks) != 0:
 				print "-"*60
 				for dork in dorkMaker.dorks:
-					print "  "+dork
+					print bright + cyan + "  "+dork
 				print "-"*60
-				print "[*] There are %s dork!"%(len(dorkMaker.dorks))
+				print bright + yellow + "[*] There are %s dork!"%(len(dorkMaker.dorks))
 			
 			else:
-				print "[-] No dorks to show!"
+				print bright + yellow + "[-] No dorks to show!"
 
 
 		elif "scan dorks" in wpb:
 			try:
 				num = int(wpb.split()[-1])
 			except ValueError:
-				print "[-] Example Usage: scan dorks 5"
+				print bright + yellow + "[-] Example Usage: scan dorks 5"
 				main()
 
 			if len(dorkMaker.dorks) != 0:
 				dorkScanner.sites = [] #^^
-				print "\n[*] Scan started!"
+				print bright + yellow + "\n[*] Scan started!"
 				forBar = 0
 				barLen = 50.0
 				for dork in dorkMaker.dorks:
-					sys.stdout.write("\r[%s%s | %d%%]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2)))
+					sys.stdout.write(bright + magenta + "\r[%s%s | %d%%] "%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2)))
 					sys.stdout.flush()
 					dorkScanner.getSites(dork, num)
 					forBar += barLen / len(dorkMaker.dorks)
-				print "\r[%s | 100%%]"%("="*50)
+				print bright + green + "\r[%s | 100%%]"%("="*50)
 				
-				print "\n[+] Found %s site!"%(len(dorkScanner.sites))
+				print bright + yellow + "\n[+] Found %s site!"%(len(dorkScanner.sites))
 
 			else:
-				print "[-] No dorks to scan!"
+				print bright + yellow + "[-] No dorks to scan!"
 
 		elif wpb == "show sites":
 			if len(dorkScanner.sites) != 0:
 				print "-"*60
 				for site in dorkScanner.sites:
-					print "  "+site
+					print bright + cyan + "  "+site
 				print "-"*60
-				print "[*] There are %s site!"%(len(dorkScanner.sites))
+				print bright + yellow + "[*] There are %s site!"%(len(dorkScanner.sites))
 
 			else:
-				print "[-] No sites to show!"
+				print bright + yellow + "[-] No sites to show!"
 
 		elif wpb == "start":
 			if len(dorkScanner.sites) != 0:
 				test             = 0
 				forBar           = 0
 				barLen           = 50.0
+				startTime		 = time.time()
 				bruteForce.found = []
-				print "[+] Brute force attack started!"
-				print "[+] Check %s for found sites!\n"%(os.getcwdu()+os.sep+"found.txt")
+				print green + "[+] Brute force attack started!"
+				print bright + yellow + "[+] Check %s for found sites!\n"%(os.getcwdu()+os.sep+"found.txt")
 				for site in dorkScanner.sites:
-					sys.stdout.write("\r[%s%s | %d%% | Found Sites: %s | Tested: %s/%s ]"%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2), len(bruteForce.found), test, len(dorkScanner.sites)))
+					sys.stdout.write(bright + magenta + "\r[%s%s | %d%% | Found : %s | Tested: %s/%s ] "%('='*int(forBar), " "*int(barLen - forBar), int(forBar * 2), len(bruteForce.found), test, len(dorkScanner.sites), ))
 					sys.stdout.flush()
 					bruteForce.brute(site)
 					forBar += barLen / len(dorkScanner.sites)
 					test   += 1
-				print "\r[%s | 100%% | Found sites: %s | Tested: %s/%s]"%("="*50, len(bruteForce.found), len(dorkScanner.sites), len(dorkScanner.sites))
+				print bright + green + "\r[%s | 100%% | Found sites: %s | Tested: %s/%s]"%("="*50, len(bruteForce.found), len(dorkScanner.sites), len(dorkScanner.sites))
 
 				found = bruteForce.found
 				if len(found) != 0:
 					for f in found:
-						print "\n[+] Site: %s"%(f[0])
-						print "    [+] Username: %s"%(f[1])
-						print "    [+] Password: %s"%(f[2])
+						print green + "\n[+] Site: %s"%(f[0])
+						print green + "    [+] Username: %s"%(f[1])
+						print green + "    [+] Password: %s"%(f[2])
 				else:
-					print "\n[-_-] I could not find anything."
+					print bright + yellow + "\n[-_-] I could not find anything."
 
 			else:
-				print "[-] No sites to brute!"
+				print bright + yellow + "[-] No sites to brute!"
 
 		else:
 			pass
 
 if __name__ == "__main__":
+	init(autoreset=True)
 	logo()
 	main()
